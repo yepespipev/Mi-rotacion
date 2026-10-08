@@ -172,6 +172,12 @@ tr:last-child td { border-bottom: 0; }
 .prog-out { font-size: .88rem; }
 </style>
 <style>
+.cal-links { grid-column: 2 / -1; font-size: .8rem; color: var(--ink-3); }
+.cal-links a { color: var(--accent); font-weight: 700; text-decoration: none; }
+.cal-links a:hover { text-decoration: underline; }
+.rlist li.past .cal-links { display: none; }
+.cal-box { display: grid; gap: 8px; }
+.cal-box .btn { width: 100%; padding-block: 12px; }
 </style>
 </head>
 <body>
@@ -429,6 +435,27 @@ tr:last-child td { border-bottom: 0; }
   function note(kind, html) { return '<div class="note ' + kind + '"><div>' + html + '</div></div>'; }
   function hueMap(filas) { var m = {}, k = 0; filas.forEach(function (f) { var key = M.norm(f.r); if (m[key] == null) m[key] = /VACACION/.test(key) ? 'vac' : HUES[k++ % HUES.length]; }); return m; }
 
+  /* calendario: archivo .ics con todas las rotaciones y enlaces por rotación */
+  function baseName(d) { return 'Mi_rotacion_' + (d.periodo || '') + '_' + String(d.codigo).replace(/[^A-Za-z0-9-]/g, ''); }
+  function dlICS(d) {
+    var blob = new Blob([M.buildICS(d)], { type: 'text/calendar;charset=utf-8' });
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = baseName(d) + '.ics'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 10000);
+    toast('Calendario descargado. Ábrelo para añadir las rotaciones.');
+  }
+  function nextDay(iso) { return M.iso(M.fromISO(iso) + 1); }
+  function detalle(d, f) { return (d.programa ? d.programa + ' · semestre ' + d.semestre + ' · ' : '') + 'periodo ' + d.periodo + ' · del ' + M.fmt(f.i) + ' al ' + M.fmt(f.f); }
+  function googleURL(d, f) {
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('Rotación: ' + f.r) +
+      '&dates=' + f.i.replace(/-/g, '') + '/' + nextDay(f.f).replace(/-/g, '') +
+      (f.s ? '&location=' + encodeURIComponent(f.s) : '') + '&details=' + encodeURIComponent(detalle(d, f)) + '&trp=false';
+  }
+  function outlookURL(d, f) {
+    return 'https://outlook.office.com/calendar/0/deeplink/compose?path=%2Fcalendar%2Faction%2Fcompose&rru=addevent&allday=true' +
+      '&subject=' + encodeURIComponent('Rotación: ' + f.r) + '&startdt=' + f.i + '&enddt=' + nextDay(f.f) +
+      (f.s ? '&location=' + encodeURIComponent(f.s) : '') + '&body=' + encodeURIComponent(detalle(d, f));
+  }
   function residentHTML(doc) {
     var f = doc.filas || [], hoy = M.hoyISO(), st = M.estado(f, hoy), hm = hueMap(f);
     var h = '<div class="stack">';
@@ -452,9 +479,12 @@ tr:last-child td { border-bottom: 0; }
       f.forEach(function (x, k) {
         var hv = hm[M.norm(x.r)], past = M.fromISO(x.f) < t, on = st.tipo === 'actual' && k === st.idx;
         h += '<li class="' + (on ? 'cur' : past ? 'past' : '') + '"><span class="sw' + (hv === 'vac' ? ' vac' : '') + '" style="--h:' + (hv === 'vac' ? 0 : hv) + '"></span><span class="name">' + esc(x.r) + '</span><span class="dur">' + esc(M.duracion(x)) + '</span>';
-        h += '<span class="sub2">' + esc(M.fmt(x.i)) + ' a ' + esc(M.fmt(x.f)) + (x.s ? ' · ' + esc(x.s) : '') + (on ? ' · en curso' : '') + '</span></li>';
+        h += '<span class="sub2">' + esc(M.fmt(x.i)) + ' a ' + esc(M.fmt(x.f)) + (x.s ? ' · ' + esc(x.s) : '') + (on ? ' · en curso' : '') + '</span>';
+        h += '<span class="cal-links">Añadir a <a href="' + esc(googleURL(doc, x)) + '" target="_blank" rel="noopener">Google Calendar</a> · <a href="' + esc(outlookURL(doc, x)) + '" target="_blank" rel="noopener">Outlook</a></span></li>';
       });
       h += '</ol>';
+      h += '<div class="cal-box"><button type="button" class="btn primary" id="ics"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M4 10h16M9 3v4M15 3v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Añadir todas a mi calendario</button>';
+      h += '<p class="hint">Descarga un archivo con todas tus rotaciones. En iPhone o Mac toca el archivo y elige Añadir todo; en Outlook ábrelo con doble clic. En Google Calendar usa los enlaces de cada rotación o, desde un computador, Configuración › Importar.</p></div>';
     }
     h += '<p class="foot">' + (doc.actualizado ? 'Actualizado el ' + esc(M.fmt(String(doc.actualizado).slice(0, 10))) + '. ' : '') + 'Vuelve a esta página para ver la versión vigente.</p></div>';
     return h;
@@ -478,6 +508,7 @@ tr:last-child td { border-bottom: 0; }
     app.innerHTML = h;
     var form = $('f'); if (form) form.addEventListener('submit', function (e) { e.preventDefault(); find($('code').value); });
     var o = $('otro'); if (o) o.addEventListener('click', function () { S.found = null; S.err = ''; render(); var i = $('code'); if (i) i.focus(); });
+    var ic = $('ics'); if (ic) ic.addEventListener('click', function () { dlICS(S.found); });
   }
   async function find(raw) {
     var code = M.normCode(raw);
