@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Mi rotación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: una sola columna para el residente (pensada para celular); panel con pestañas para la coordinación. */
+:root {
+  --bg: #F2F6F6; --surface: #FFFFFF; --surface-2: #E8F0EF; --ink: #0F2F2C; --ink-2: #48635F; --ink-3: #6C8682;
+  --line: #D2DFDD; --line-2: #B4C8C5;
+  --accent: #0E6B62; --accent-ink: #FFFFFF; --accent-soft: #DAEDEA; --accent-line: #8CC3BC;
+  --warn: #8A5300; --warn-bg: #FDF1DB; --warn-line: #E2AE52; --warn-mark: #D99A2B;
+  --danger: #B42318; --danger-bg: #FDE8E5; --danger-line: #E9978C;
+  --ok: #19704A; --ok-bg: #E1F2E9;
+  --seg-s: 45%; --seg-l: 80%;
+  --shadow: 0 1px 2px rgba(15, 47, 44, .06), 0 2px 8px rgba(15, 47, 44, .05);
+  --f-display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  --f-body: "Atkinson Hyperlegible", Verdana, Arial, sans-serif;
+  --r: 8px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0B1413; --surface: #111D1B; --surface-2: #172725; --ink: #E0EEEB; --ink-2: #A2BAB6; --ink-3: #7D9692;
+    --line: #233936; --line-2: #34504C;
+    --accent: #4DB8AA; --accent-ink: #062320; --accent-soft: #143A35; --accent-line: #2E7C72;
+    --warn: #F0C072; --warn-bg: #33270F; --warn-line: #7A5A1E; --warn-mark: #E3AE55;
+    --danger: #F59A8F; --danger-bg: #3A1714; --danger-line: #8A3A31;
+    --ok: #74D3A3; --ok-bg: #11301F;
+    --seg-s: 30%; --seg-l: 32%;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0B1413; --surface: #111D1B; --surface-2: #172725; --ink: #E0EEEB; --ink-2: #A2BAB6; --ink-3: #7D9692;
+  --line: #233936; --line-2: #34504C;
+  --accent: #4DB8AA; --accent-ink: #062320; --accent-soft: #143A35; --accent-line: #2E7C72;
+  --warn: #F0C072; --warn-bg: #33270F; --warn-line: #7A5A1E; --warn-mark: #E3AE55;
+  --danger: #F59A8F; --danger-bg: #3A1714; --danger-line: #8A3A31;
+  --ok: #74D3A3; --ok-bg: #11301F;
+  --seg-s: 30%; --seg-l: 32%;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; margin: 0; }
+button, input, select { font: inherit; color: inherit; }
+h1, h2, h3 { font-family: var(--f-display); font-stretch: 116%; letter-spacing: -.01em; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: 1.5rem; font-weight: 750; }
+h2 { font-size: 1.2rem; font-weight: 700; }
+h3 { font-size: 1rem; font-weight: 700; }
+p { margin: 0; }
+td, .num, .kpi b { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 16px; }
+.narrow { max-width: 640px; }
+.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; justify-content: space-between; padding-block: 16px 14px; }
+.top .sub { color: var(--ink-2); font-size: .9rem; }
+.role { display: inline-flex; gap: 8px; align-items: center; font-size: .82rem; font-weight: 700; color: var(--ink-2); border: 1px solid var(--line-2); border-radius: 999px; padding: 4px 12px; background: var(--surface); }
+main { padding-block: 20px 60px; }
+.stack { display: grid; gap: 16px; min-width: 0; }
+.stack > * { min-width: 0; }
+.stack.tight { gap: 8px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.grow { flex: 1 1 auto; min-width: 0; }
+.muted { color: var(--ink-2); }
+.small { font-size: .86rem; }
+.hint { color: var(--ink-3); font-size: .84rem; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--line-2); background: var(--surface); border-radius: var(--r); padding: 9px 14px; cursor: pointer; font-weight: 700; font-size: .92rem; line-height: 1.2; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.danger { color: var(--danger); border-color: var(--danger-line); }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--accent); padding-inline: 8px; }
+.btn.ghost:hover { background: var(--accent-soft); }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+.btn svg { flex: none; }
+.note { display: flex; gap: 10px; align-items: flex-start; border-radius: var(--r); padding: 10px 12px; border: 1px solid var(--line); background: var(--surface-2); font-size: .9rem; }
+.note.warn { background: var(--warn-bg); border-color: var(--warn-line); }
+.note.danger { background: var(--danger-bg); border-color: var(--danger-line); }
+.note.ok { background: var(--ok-bg); border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
+.note .ico { flex: none; margin-top: 2px; }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field > span { font-size: .82rem; font-weight: 700; color: var(--ink-2); }
+.field input, .field select { border: 1px solid var(--line-2); border-radius: 6px; background: var(--surface); padding: 9px 10px; height: 42px; min-width: 0; width: 100%; }
+.spinner { width: 18px; height: 18px; border-radius: 50%; border: 2.5px solid var(--accent-soft); border-top-color: var(--accent); animation: spin .8s linear infinite; flex: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2.4s; } }
+.toast { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: var(--r); font-weight: 700; font-size: .9rem; z-index: 50; max-width: calc(100% - 32px); box-shadow: var(--shadow); }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: .78rem; font-weight: 700; border-radius: 999px; padding: 2px 10px; border: 1px solid transparent; white-space: nowrap; }
+.chip.ok { background: var(--ok-bg); color: var(--ok); }
+.chip.warn { background: var(--warn-bg); color: var(--warn); border-color: var(--warn-line); }
+.chip.danger { background: var(--danger-bg); color: var(--danger); border-color: var(--danger-line); }
+.chip.none { background: var(--surface-2); color: var(--ink-2); }
+
+/* ---- residente ---- */
+.who { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; color: var(--ink-2); font-size: .9rem; }
+.who b { color: var(--ink); font-family: var(--f-display); font-stretch: 112%; font-size: 1.05rem; }
+.now { background: var(--surface); border: 1px solid var(--accent-line); border-radius: 12px; padding: 18px; display: grid; gap: 8px; box-shadow: var(--shadow); }
+.now .eyebrow { font-size: .8rem; font-weight: 700; letter-spacing: .03em; color: var(--accent); }
+.now h2 { font-size: 1.45rem; font-weight: 750; }
+.now .meta { display: flex; flex-wrap: wrap; gap: 4px 16px; color: var(--ink-2); font-size: .92rem; }
+.now .meta b { color: var(--ink); }
+.count { font-family: var(--f-display); font-stretch: 112%; font-weight: 700; font-size: 1rem; color: var(--ink); }
+.line { display: grid; gap: 6px; }
+.track { position: relative; display: flex; height: 22px; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); background: var(--surface-2); }
+.seg { height: 100%; background: hsl(var(--h) var(--seg-s) var(--seg-l)); border-right: 2px solid var(--surface); min-width: 2px; }
+.seg.vac { background: repeating-linear-gradient(135deg, var(--line) 0 4px, transparent 4px 7px), var(--surface); }
+.seg.on { outline: 2px solid var(--ink); outline-offset: -2px; }
+.today { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--danger); }
+.ticks { display: flex; justify-content: space-between; font-size: .76rem; color: var(--ink-3); }
+.rlist { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); overflow: hidden; }
+.rlist li { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 4px 12px; align-items: start; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+.rlist li:last-child { border-bottom: 0; }
+.rlist li.cur { background: var(--accent-soft); }
+.rlist li.past { color: var(--ink-3); }
+.rlist .sw { width: 10px; height: 10px; border-radius: 3px; margin-top: 6px; background: hsl(var(--h) var(--seg-s) var(--seg-l)); border: 1px solid hsl(var(--h) 40% 45%); }
+.rlist .sw.vac { background: repeating-linear-gradient(135deg, var(--line-2) 0 2px, transparent 2px 4px); border-color: var(--line-2); }
+.rlist .name { font-weight: 700; overflow-wrap: anywhere; }
+.rlist .sub2 { grid-column: 2; color: var(--ink-2); font-size: .86rem; }
+.rlist li.past .sub2 { color: var(--ink-3); }
+.rlist .dur { font-size: .82rem; color: var(--ink-2); white-space: nowrap; text-align: right; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.actions .btn { flex: 1 1 170px; }
+.foot { color: var(--ink-3); font-size: .8rem; }
+.req { display: grid; gap: 12px; }
+.req .field input { font-size: 1.1rem; letter-spacing: .04em; }
+
+/* ---- coordinación ---- */
+.loadbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+.loadbar input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 14px; display: grid; gap: 2px; }
+.kpi b { font-family: var(--f-display); font-size: 1.55rem; font-weight: 750; line-height: 1.1; }
+.kpi span { color: var(--ink-2); font-size: .84rem; }
+.kpi.warn { border-color: var(--warn-line); background: var(--warn-bg); }
+.kpi.warn b { color: var(--warn); }
+@media (max-width: 640px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.tab { border: 0; background: transparent; padding: 10px 12px; font-weight: 700; color: var(--ink-2); cursor: pointer; border-bottom: 2.5px solid transparent; white-space: nowrap; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.tab .n { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--surface-2); font-size: .78rem; text-align: center; }
+.tab[aria-selected="true"] .n { background: var(--accent); color: var(--accent-ink); }
+.rq { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 6px 14px; align-items: start; padding: 14px; border-bottom: 1px solid var(--line); }
+.rq:last-child { border-bottom: 0; }
+.rq img { width: 40px; height: 40px; border-radius: 50%; }
+.rq .acts { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+@media (max-width: 640px) { .rq { grid-template-columns: 32px minmax(0, 1fr); } .rq img { width: 32px; height: 32px; } .rq .acts { grid-column: 1 / -1; justify-content: flex-start; } }
+.checks { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 4px; font-size: .86rem; }
+.checks li { display: flex; gap: 8px; align-items: flex-start; }
+.checks .ic { flex: none; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font-size: .7rem; font-weight: 700; margin-top: 1px; }
+.checks .ic.ok { background: var(--ok-bg); color: var(--ok); }
+.checks .ic.no { background: var(--danger-bg); color: var(--danger); }
+.checks .ic.mid { background: var(--warn-bg); color: var(--warn); }
+.list { border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); overflow: hidden; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; }
+th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; font-size: .9rem; }
+th { font-size: .78rem; color: var(--ink-2); font-weight: 700; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+.empty { padding: 28px 16px; text-align: center; color: var(--ink-2); display: grid; gap: 8px; justify-items: center; }
+.phone { max-width: 400px; margin: 0 auto; border: 1px solid var(--line-2); border-radius: 22px; padding: 18px 14px; background: var(--bg); box-shadow: var(--shadow); }
+.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 10px; max-width: 70ch; }
+.steps li::marker { font-family: var(--f-display); font-weight: 750; color: var(--accent); }
+.prog-out { font-size: .88rem; }
+</style>
+<style>
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div>
+      <h1>Mi rotación</h1>
+      <p class="sub">Residencias médico-quirúrgicas · Facultad de Medicina</p>
+    </div>
+  </div>
+</header>
+<main class="wrap" id="app">
+  <div class="card row"><span class="spinner" aria-hidden="true"></span><span>Cargando la programación…</span></div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script>
+/* Lógica compartida de "Mi rotación": lectura de la programación, documentos por residente,
+   verificación de nombres, calendario .ics y archivos del residente. Sin red ni almacenamiento. */
+(function (root) {
+  'use strict';
+  function dn(y, m, d) { return Math.floor(Date.UTC(y, m - 1, d) / 864e5); }
+  function ymd(n) { var t = new Date(n * 864e5); return [t.getUTCFullYear(), t.getUTCMonth() + 1, t.getUTCDate()]; }
+  function pad(x) { return String(x).padStart(2, '0'); }
+  function iso(n) { var a = ymd(n); return a[0] + '-' + pad(a[1]) + '-' + pad(a[2]); }
+  function fromISO(s) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s || '')); return m ? dn(+m[1], +m[2], +m[3]) : null; }
+  function fmt(s) { var n = typeof s === 'number' ? s : fromISO(s); if (n == null) return ''; var a = ymd(n); return pad(a[2]) + '/' + pad(a[1]) + '/' + a[0]; }
+  var MES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  var MESC = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+  function fmtLargo(s) { var n = fromISO(s); if (n == null) return ''; var a = ymd(n); return a[2] + ' de ' + MES[a[1] - 1]; }
+  function fmtCorto(s) { var n = fromISO(s); if (n == null) return ''; var a = ymd(n); return a[2] + ' ' + MESC[a[1] - 1]; }
+  function wday(n) { return ((n + 4) % 7 + 7) % 7; }
+  function norm(s) { return String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function clean(s) { return String(s == null ? '' : s).replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function codeStr(v) { if (v == null) return ''; if (typeof v === 'number') return String(Math.round(v)); var s = clean(v); return /^\d+\.0+$/.test(s) ? s.replace(/\.0+$/, '') : s; }
+  function esMarcador(cod) { return /^R1-/i.test(String(cod || '')); }
+
+  function toISODate(v) {
+    if (v == null || v === '') return null;
+    if (v instanceof Date && !isNaN(v)) return iso(dn(v.getFullYear(), v.getMonth() + 1, v.getDate()));
+    if (typeof v === 'number' && isFinite(v)) return iso(Math.round(v) - 25569);
+    var s = clean(v), m;
+    if ((m = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(s))) return iso(dn(+m[1], +m[2], +m[3]));
+    if ((m = /^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/.exec(s))) return iso(dn(+m[3], +m[2], +m[1]));
+    return null;
+  }
+
+  /* ---------- programación: desde el JSON o desde la hoja Programación ---------- */
+  function fromJSON(obj) {
+    if (!obj || !Array.isArray(obj.residentes)) return { error: 'El JSON no tiene la lista de residentes.' };
+    var res = [];
+    obj.residentes.forEach(function (r) {
+      var cod = codeStr(r.codigo); if (!cod) return;
+      var filas = (r.filas || []).map(function (f) { return { r: clean(f.r), s: clean(f.s), i: toISODate(f.i), f: toISODate(f.f) }; }).filter(function (f) { return f.r && f.i && f.f; });
+      res.push({ codigo: cod, apellidos: clean(r.apellidos), nombres: clean(r.nombres), correo: clean(r.correo), programa: clean(r.programa), semestre: r.semestre == null ? null : Number(r.semestre), periodo: String(r.periodo || obj.periodo || ''), filas: sortFilas(filas) });
+    });
+    return finish(res, String(obj.periodo || ''), obj.estado || '');
+  }
+  function fromWorkbook(wb, XLSX) {
+    var names = wb.SheetNames.slice().sort(function (a, b) { return (norm(b) === 'PROGRAMACION') - (norm(a) === 'PROGRAMACION'); });
+    for (var k = 0; k < names.length; k++) {
+      var rows = XLSX.utils.sheet_to_json(wb.Sheets[names[k]], { header: 1, defval: null, blankrows: false, raw: true });
+      for (var h = 0; h < Math.min(rows.length, 10); h++) {
+        var head = (rows[h] || []).map(norm);
+        var c = {
+          cod: head.findIndex(function (x) { return /^COD/.test(x); }),
+          rot: head.findIndex(function (x) { return /PRACTICA|^ROTACION/.test(x); }),
+          ini: head.findIndex(function (x) { return /^FECHA DE INICIO|^INICIO/.test(x); }),
+          fin: head.findIndex(function (x) { return /^FECHA FINALIZACION|^FECHA DE FIN|^FIN/.test(x); }),
+          prog: head.findIndex(function (x) { return /^PROGRAMA/.test(x); }),
+          sem: head.findIndex(function (x) { return /^SEMESTRE/.test(x); }),
+          per: head.findIndex(function (x) { return /^PERIODO/.test(x); }),
+          sede: head.findIndex(function (x) { return /^SEDE/.test(x); }),
+          ape: head.findIndex(function (x) { return /APELLIDO/.test(x); }),
+          nom: head.findIndex(function (x) { return /^NOMBRES?\b/.test(x) && !/PRACTICA/.test(x); }),
+          cor: head.findIndex(function (x) { return /CORREO|E-?MAIL/.test(x); })
+        };
+        if (c.cod < 0 || c.rot < 0 || c.ini < 0 || c.fin < 0) continue;
+        var by = {}, order = [], periodo = '';
+        rows.slice(h + 1).forEach(function (r) {
+          var cod = codeStr(r[c.cod]); if (!cod) return;
+          var f = { r: clean(r[c.rot]), s: c.sede >= 0 ? clean(r[c.sede]) : '', i: toISODate(r[c.ini]), f: toISODate(r[c.fin]) };
+          if (!f.r || !f.i || !f.f) return;
+          if (/^VACACIONES$/i.test(f.s)) f.s = '';
+          if (!by[cod]) {
+            by[cod] = { codigo: cod, apellidos: c.ape >= 0 ? clean(r[c.ape]) : '', nombres: c.nom >= 0 ? clean(r[c.nom]) : '', correo: c.cor >= 0 ? clean(r[c.cor]) : '', programa: c.prog >= 0 ? clean(r[c.prog]) : '', semestre: c.sem >= 0 && r[c.sem] != null ? Number(r[c.sem]) : null, periodo: c.per >= 0 ? codeStr(r[c.per]) : '', filas: [] };
+            order.push(cod);
+          }
+          by[cod].filas.push(f);
+          if (!periodo && c.per >= 0) periodo = codeStr(r[c.per]);
+        });
+        var res = order.map(function (k2) { by[k2].filas = sortFilas(by[k2].filas); return by[k2]; });
+        if (res.length) return finish(res, periodo, '');
+      }
+    }
+    return { error: 'No encontré la hoja Programación (con Código, Nombre de la práctica, Fecha de inicio y Fecha finalización).' };
+  }
+  function sortFilas(f) { return f.sort(function (a, b) { return a.i < b.i ? -1 : a.i > b.i ? 1 : 0; }); }
+  function finish(res, periodo, estado) {
+    var por = {}; res.forEach(function (r) { if (!r.periodo) r.periodo = periodo; por[r.codigo] = r; });
+    return { periodo: periodo || (res[0] && res[0].periodo) || '', estado: estado, residentes: res, porCodigo: por };
+  }
+
+  /* ---------- documento por residente (sin nombres ni correos) ---------- */
+  function docFor(r, ahoraISO) {
+    return { codigo: r.codigo, programa: r.programa, semestre: r.semestre, periodo: r.periodo, filas: r.filas.map(function (f) { return { r: f.r, s: f.s, i: f.i, f: f.f }; }), actualizado: ahoraISO || new Date().toISOString() };
+  }
+  function firma(d) { return d ? JSON.stringify([d.codigo, d.programa, d.semestre, String(d.periodo), (d.filas || []).map(function (f) { return [f.r, f.s, f.i, f.f]; })]) : ''; }
+  function mismoContenido(a, b) { return firma(a) === firma(b); }
+
+  /* ---------- verificación de nombre ---------- */
+  function tokens(s) { return norm(s).split(/[^A-Z]+/).filter(function (t) { return t.length >= 2 && ['DE', 'DEL', 'LA', 'LAS', 'LOS', 'Y'].indexOf(t) < 0; }); }
+  function nombreCoincide(nombreCuenta, r) {
+    if (!nombreCuenta) return 'sin-nombre';
+    var t = tokens(nombreCuenta), ap = tokens(r.apellidos), no = tokens(r.nombres);
+    if (!ap.length && !no.length) return 'no';
+    var hayAp = ap.some(function (x) { return t.indexOf(x) >= 0; }), hayNo = no.some(function (x) { return t.indexOf(x) >= 0; });
+    if (hayAp && hayNo) return 'si';
+    if (hayAp || hayNo) return 'parcial';
+    return 'no';
+  }
+
+  /* ---------- duración y estado del día ---------- */
+  function duracion(f) {
+    var a = fromISO(f.i), b = fromISO(f.f); if (a == null || b == null) return '';
+    var dias = b - a + 1;
+    if (wday(a) === 1 && wday(b) === 6) { var w = Math.round((dias + 1) / 7); return w + (w === 1 ? ' semana' : ' semanas'); }
+    var m = Math.round(dias / 30.44 * 2) / 2;
+    if (m >= 0.5 && Math.abs(dias - m * 30.44) <= 4) return m === 0.5 ? 'medio mes' : String(m).replace('.', ',') + (m === 1 ? ' mes' : ' meses');
+    return dias + (dias === 1 ? ' día' : ' días');
+  }
+  function hoyISO(d) { d = d || new Date(); return iso(dn(d.getFullYear(), d.getMonth() + 1, d.getDate())); }
+  function estado(filas, hoy) {
+    var h = fromISO(hoy), i;
+    for (i = 0; i < filas.length; i++) { if (fromISO(filas[i].i) <= h && h <= fromISO(filas[i].f)) return { tipo: 'actual', idx: i, dias: fromISO(filas[i].f) - h }; }
+    for (i = 0; i < filas.length; i++) { if (fromISO(filas[i].i) > h) return { tipo: filas.length && i === 0 ? 'antes' : 'entre', idx: i, dias: fromISO(filas[i].i) - h }; }
+    return { tipo: 'terminado', idx: filas.length - 1, dias: 0 };
+  }
+
+  /* ---------- calendario .ics ---------- */
+  function icsEsc(s) { return String(s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n'); }
+  function fold(line) {
+    var out = [], cur = '', bytes = 0;
+    for (var ch of line) {
+      var b = unescape(encodeURIComponent(ch)).length;
+      if (bytes + b > (out.length ? 74 : 75)) { out.push(cur); cur = ''; bytes = 0; }
+      cur += ch; bytes += b;
+    }
+    out.push(cur);
+    return out.join('\r\n ');
+  }
+  function stampUTC(d) { d = d || new Date(); return d.getUTCFullYear() + pad(d.getUTCMonth() + 1) + pad(d.getUTCDate()) + 'T' + pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + pad(d.getUTCSeconds()) + 'Z'; }
+  function compact(s) { return String(s).replace(/-/g, ''); }
+  function buildICS(doc, opts) {
+    opts = opts || {};
+    var st = stampUTC(opts.ahora), per = String(doc.periodo || '');
+    var L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Facultad de Medicina//Mi rotacion//ES', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+      'X-WR-CALNAME:' + icsEsc('Rotaciones ' + per), 'X-WR-TIMEZONE:America/Bogota'];
+    (doc.filas || []).forEach(function (f, k) {
+      var fin = iso(fromISO(f.f) + 1);
+      L.push('BEGIN:VEVENT');
+      L.push('UID:' + compact(per) + '-' + String(doc.codigo).replace(/[^A-Za-z0-9-]/g, '') + '-' + (k + 1) + '@mi-rotacion');
+      L.push('DTSTAMP:' + st);
+      L.push('DTSTART;VALUE=DATE:' + compact(f.i));
+      L.push('DTEND;VALUE=DATE:' + compact(fin));
+      L.push('SUMMARY:' + icsEsc('Rotación: ' + f.r));
+      if (f.s) L.push('LOCATION:' + icsEsc(f.s));
+      L.push('DESCRIPTION:' + icsEsc((doc.programa ? doc.programa + ' · semestre ' + doc.semestre + ' · ' : '') + 'periodo ' + per + ' · del ' + fmt(f.i) + ' al ' + fmt(f.f) + ' (' + duracion(f) + ')'));
+      L.push('TRANSP:TRANSPARENT');
+      L.push('END:VEVENT');
+    });
+    L.push('END:VCALENDAR');
+    return L.map(fold).join('\r\n') + '\r\n';
+  }
+
+  /* ---------- archivos del residente ---------- */
+  function residentWorkbook(doc, XLSX) {
+    var aoa = [['Mi rotación'], ['Código', doc.codigo], ['Programa', doc.programa], ['Semestre', doc.semestre], ['Periodo', /^\d+$/.test(String(doc.periodo)) ? Number(doc.periodo) : doc.periodo], [],
+      ['Rotación', 'Sede', 'Fecha de inicio', 'Fecha de finalización', 'Duración']];
+    (doc.filas || []).forEach(function (f) { aoa.push([f.r, f.s || '', { t: 'n', v: fromISO(f.i) + 25569, z: 'dd/mm/yyyy' }, { t: 'n', v: fromISO(f.f) + 25569, z: 'dd/mm/yyyy' }, duracion(f)]); });
+    var ws = XLSX.utils.aoa_to_sheet(aoa);
+    ws['!cols'] = [{ wch: 42 }, { wch: 22 }, { wch: 15 }, { wch: 19 }, { wch: 13 }];
+    var wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Mi rotación');
+    return wb;
+  }
+  function zipICS(ics, nombre, XLSX) {
+    var C = XLSX.CFB, cfb = C.utils.cfb_new();
+    var bytes = new TextEncoder().encode(ics);
+    C.utils.cfb_add(cfb, nombre, bytes);
+    var out = C.write(cfb, { fileType: 'zip', type: 'array' });
+    return out instanceof Uint8Array ? out : new Uint8Array(out);
+  }
+
+  /* ---------- JSON público cifrado por código ----------
+     Cada entrada se cifra (AES-256-GCM) con una clave derivada del código del residente (PBKDF2-SHA256).
+     El índice de la entrada también sale del código, así que el archivo no muestra códigos, nombres ni rotaciones. */
+  var PUB_ITER = 150000;
+  function b64(u8) { var s = ''; for (var i = 0; i < u8.length; i++) s += String.fromCharCode(u8[i]); return btoa(s); }
+  function unb64(t) { var s = atob(t), u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u; }
+  function hex(u8) { return Array.prototype.map.call(u8, function (x) { return x.toString(16).padStart(2, '0'); }).join(''); }
+  function normCode(c) { return String(c == null ? '' : c).toUpperCase().replace(/[^A-Z0-9-]/g, ''); }
+  function subtle() { var c = (typeof crypto !== 'undefined' && crypto) || (typeof globalThis !== 'undefined' && globalThis.crypto); if (!c || !c.subtle) throw new Error('Este navegador no permite descifrar la programación.'); return c; }
+  async function derive(code, salt, iter) {
+    var c = subtle(), km = await c.subtle.importKey('raw', new TextEncoder().encode('mi-rotacion|' + normCode(code)), 'PBKDF2', false, ['deriveBits']);
+    var bits = new Uint8Array(await c.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: salt, iterations: iter }, km, 384));
+    return { id: hex(bits.slice(0, 16)), key: bits.slice(16, 48) };
+  }
+  async function buildPublic(prog, opts) {
+    opts = opts || {};
+    var c = subtle(), iter = opts.iter || PUB_ITER, salt = c.getRandomValues(new Uint8Array(16)), entries = [], ahora = opts.ahora || new Date().toISOString();
+    for (var i = 0; i < prog.residentes.length; i++) {
+      var r = prog.residentes[i]; if (esMarcador(r.codigo) || /^PROV-/i.test(r.codigo)) continue;
+      var d = await derive(r.codigo, salt, iter), k = await c.subtle.importKey('raw', d.key, 'AES-GCM', false, ['encrypt']);
+      var iv = c.getRandomValues(new Uint8Array(12));
+      var ct = new Uint8Array(await c.subtle.encrypt({ name: 'AES-GCM', iv: iv }, k, new TextEncoder().encode(JSON.stringify(docFor(r, ahora)))));
+      entries.push([d.id, { iv: b64(iv), d: b64(ct) }]);
+      if (opts.onProgress) opts.onProgress(i + 1, prog.residentes.length);
+    }
+    entries.sort(function (a, b) { return a[0] < b[0] ? -1 : 1; });
+    var ent = {}; entries.forEach(function (e) { ent[e[0]] = e[1]; });
+    return { tipo: 'rotaciones-publicas', version: 1, periodo: prog.periodo, estado: prog.estado || '', generado: ahora,
+      nota: 'Cada residente ve solo su rotación escribiendo su código. El archivo no contiene nombres, correos ni códigos legibles.',
+      kdf: { alg: 'PBKDF2-SHA256', iter: iter, sal: b64(salt) }, cifrado: 'AES-256-GCM', entradas: ent };
+  }
+  async function lookupPublic(pub, code) {
+    if (!pub || !pub.kdf || !pub.entradas) return null;
+    var c = subtle(), d = await derive(code, unb64(pub.kdf.sal), pub.kdf.iter), e = pub.entradas[d.id];
+    if (!e) return null;
+    try {
+      var k = await c.subtle.importKey('raw', d.key, 'AES-GCM', false, ['decrypt']);
+      var pt = await c.subtle.decrypt({ name: 'AES-GCM', iv: unb64(e.iv) }, k, unb64(e.d));
+      return JSON.parse(new TextDecoder().decode(pt));
+    } catch (err) { return null; }
+  }
+
+  var api = { buildPublic: buildPublic, lookupPublic: lookupPublic, normCode: normCode, dn: dn, iso: iso, fromISO: fromISO, fmt: fmt, fmtLargo: fmtLargo, fmtCorto: fmtCorto, wday: wday, norm: norm, clean: clean, codeStr: codeStr, esMarcador: esMarcador, toISODate: toISODate,
+    fromJSON: fromJSON, fromWorkbook: fromWorkbook, docFor: docFor, mismoContenido: mismoContenido, nombreCoincide: nombreCoincide,
+    duracion: duracion, hoyISO: hoyISO, estado: estado, buildICS: buildICS, residentWorkbook: residentWorkbook, zipICS: zipICS };
+  root.MiRot = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+(function () {
+  'use strict';
+  var M = window.MiRot;
+  var HUES = [168, 205, 262, 140, 300, 188, 232, 95, 325, 118, 282, 215];
+  var S = { pub: undefined, found: null, err: '', busy: false, fails: 0 };
+  var app = document.getElementById('app');
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function plural(n, a, b) { return n + ' ' + (n === 1 ? a : b); }
+  var toastT;
+  function toast(t) { var el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(function () { el.hidden = true; }, 3500); }
+  function note(kind, html) { return '<div class="note ' + kind + '"><div>' + html + '</div></div>'; }
+  function hueMap(filas) { var m = {}, k = 0; filas.forEach(function (f) { var key = M.norm(f.r); if (m[key] == null) m[key] = /VACACION/.test(key) ? 'vac' : HUES[k++ % HUES.length]; }); return m; }
+
+  function residentHTML(doc) {
+    var f = doc.filas || [], hoy = M.hoyISO(), st = M.estado(f, hoy), hm = hueMap(f);
+    var h = '<div class="stack">';
+    h += '<div class="who"><b>Código ' + esc(doc.codigo) + '</b><span>' + esc(doc.programa) + ' · semestre ' + esc(doc.semestre) + '</span><span>Periodo ' + esc(doc.periodo) + '</span></div>';
+    if (f.length) {
+      var cur = f[st.idx], lab, cnt;
+      if (st.tipo === 'actual') { lab = 'Ahora estás en'; cnt = st.dias === 0 ? 'Termina hoy' : 'Termina en ' + plural(st.dias, 'día', 'días'); }
+      else if (st.tipo === 'antes') { lab = 'Tu primera rotación'; cnt = 'Empieza en ' + plural(st.dias, 'día', 'días'); }
+      else if (st.tipo === 'entre') { lab = 'Tu próxima rotación'; cnt = 'Empieza en ' + plural(st.dias, 'día', 'días'); }
+      else { lab = 'El periodo terminó · última rotación'; cnt = ''; }
+      h += '<section class="now"><span class="eyebrow">' + esc(lab) + '</span><h2>' + esc(cur.r) + '</h2>';
+      h += '<div class="meta">' + (cur.s ? '<span>Sede <b>' + esc(cur.s) + '</b></span>' : '') + '<span>Del <b>' + esc(M.fmtLargo(cur.i)) + '</b> al <b>' + esc(M.fmtLargo(cur.f)) + '</b></span><span>' + esc(M.duracion(cur)) + '</span></div>';
+      if (cnt) h += '<span class="count">' + esc(cnt) + '</span>';
+      h += '</section>';
+      var a = M.fromISO(f[0].i), b = M.fromISO(f[f.length - 1].f) + 1, tot = Math.max(1, b - a), t = M.fromISO(hoy);
+      h += '<div class="line" aria-label="Línea del periodo"><div class="track">';
+      f.forEach(function (x, k) { var w = (M.fromISO(x.f) + 1 - M.fromISO(x.i)) / tot * 100, hv = hm[M.norm(x.r)]; h += '<span class="seg' + (hv === 'vac' ? ' vac' : '') + (st.tipo === 'actual' && k === st.idx ? ' on' : '') + '" style="width:' + w.toFixed(3) + '%;--h:' + (hv === 'vac' ? 0 : hv) + '" title="' + esc(x.r + ' · ' + M.fmt(x.i) + ' a ' + M.fmt(x.f)) + '"></span>'; });
+      if (t >= a && t < b) h += '<span class="today" style="left:' + ((t - a) / tot * 100).toFixed(2) + '%" title="Hoy"></span>';
+      h += '</div><div class="ticks"><span>' + esc(M.fmtCorto(f[0].i)) + '</span><span>' + esc(M.fmtCorto(f[f.length - 1].f)) + '</span></div></div>';
+      h += '<ol class="rlist">';
+      f.forEach(function (x, k) {
+        var hv = hm[M.norm(x.r)], past = M.fromISO(x.f) < t, on = st.tipo === 'actual' && k === st.idx;
+        h += '<li class="' + (on ? 'cur' : past ? 'past' : '') + '"><span class="sw' + (hv === 'vac' ? ' vac' : '') + '" style="--h:' + (hv === 'vac' ? 0 : hv) + '"></span><span class="name">' + esc(x.r) + '</span><span class="dur">' + esc(M.duracion(x)) + '</span>';
+        h += '<span class="sub2">' + esc(M.fmt(x.i)) + ' a ' + esc(M.fmt(x.f)) + (x.s ? ' · ' + esc(x.s) : '') + (on ? ' · en curso' : '') + '</span></li>';
+      });
+      h += '</ol>';
+    }
+    h += '<p class="foot">' + (doc.actualizado ? 'Actualizado el ' + esc(M.fmt(String(doc.actualizado).slice(0, 10))) + '. ' : '') + 'Vuelve a esta página para ver la versión vigente.</p></div>';
+    return h;
+  }
+  function render() {
+    var h = '<div class="narrow stack" style="margin:0 auto">';
+    if (S.found) {
+      h += residentHTML(S.found) + '<div class="row"><button type="button" class="btn" id="otro">Buscar otro código</button></div>';
+    } else {
+      h += '<div class="card req"><h2>Consulta tu rotación</h2><p class="muted">Escribe tu código de estudiante. Tu programación solo se abre con tu código: la página no muestra nombres y nadie puede ver la lista de residentes.</p>';
+      if (S.pub === undefined) h += '<div class="row"><span class="spinner" aria-hidden="true"></span><span class="muted small">Cargando…</span></div>';
+      else if (!S.pub) h += note('warn', 'La programación todavía no está publicada. Vuelve más tarde.');
+      else {
+        h += '<form id="f" class="req" novalidate><label class="field"><span>Código de estudiante</span><input id="code" inputmode="numeric" autocomplete="off" placeholder="Ej. 202512345"></label>';
+        h += '<p class="hint" id="err" role="alert">' + esc(S.err) + '</p><button class="btn primary" type="submit"' + (S.busy ? ' disabled' : '') + '>' + (S.busy ? 'Buscando…' : 'Ver mi rotación') + '</button></form>';
+        h += '<p class="foot">Programación del periodo ' + esc(S.pub.periodo) + (S.pub.estado === 'borrador' ? ' · borrador en revisión' : '') + '.</p>';
+      }
+      h += '</div>';
+    }
+    h += '<p class="foot">Solo quien tenga tu código puede ver tu programación. Nadie puede modificarla desde esta página.</p></div>';
+    app.innerHTML = h;
+    var form = $('f'); if (form) form.addEventListener('submit', function (e) { e.preventDefault(); find($('code').value); });
+    var o = $('otro'); if (o) o.addEventListener('click', function () { S.found = null; S.err = ''; render(); var i = $('code'); if (i) i.focus(); });
+  }
+  async function find(raw) {
+    var code = M.normCode(raw);
+    if (!/^[A-Z0-9-]{4,20}$/.test(code)) { S.err = 'Escribe tu código tal como aparece en la universidad.'; render(); return; }
+    if (S.fails >= 5) { S.err = 'Demasiados intentos. Espera unos segundos.'; render(); await new Promise(function (r) { setTimeout(r, 5000); }); S.fails = 3; }
+    S.busy = true; S.err = ''; render();
+    var d = null; try { d = await M.lookupPublic(S.pub, code); } catch (e) { S.err = e.message || 'No se pudo buscar en este navegador.'; }
+    S.busy = false;
+    if (d) { S.found = d; S.fails = 0; } else if (!S.err) { S.fails++; S.err = 'No encontramos ese código en la programación del periodo ' + S.pub.periodo + '. Revísalo o consulta con la coordinación.'; }
+    render();
+    if (!d) { var i = $('code'); if (i) { i.value = raw; i.focus(); } }
+  }
+  fetch('rotaciones.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { S.pub = j && j.entradas ? j : null; render(); var i = $('code'); if (i) i.focus(); }).catch(function () { S.pub = null; render(); });
+  render();
+})();
+</script>
+</body>
+</html>
